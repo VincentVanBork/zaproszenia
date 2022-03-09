@@ -2,15 +2,16 @@
 package main
 
 import (
-	"cloud.google.com/go/datastore"
 	"context"
 	"encoding/json"
 	"fmt"
-	"google.golang.org/appengine"
 	"log"
 	"net/http"
 	"os"
 	"zaproszenia/models"
+
+	"cloud.google.com/go/datastore"
+	"google.golang.org/appengine"
 )
 
 var datastoreClient *datastore.Client
@@ -26,9 +27,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	defer datastoreClient.Close()
 	http.HandleFunc("/", getAllInvit)
-	http.HandleFunc("/create", createInvit)
+	http.HandleFunc("/create", BasicAuth(createInvit))
 	appengine.Main()
 }
 
@@ -88,4 +89,49 @@ func createInvit(w http.ResponseWriter, r *http.Request) {
 	}
 	data, _ := json.Marshal(invit)
 	_, err = w.Write(data)
+}
+
+func unauthorised(rw http.ResponseWriter) {
+	rw.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
+	rw.WriteHeader(http.StatusUnauthorized)
+
+}
+
+func BasicAuth(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		u, p, ok := r.BasicAuth()
+		if !ok {
+			log.Println("Error getting all credentials")
+			unauthorised(w)
+			return
+		}
+		ctx := context.Background()
+
+		query := datastore.NewQuery("User").Filter("Username =", u)
+		var users []*models.User
+
+		if _, err := datastoreClient.GetAll(ctx, query, &users); err != nil {
+			log.Println("Error getting all users", err)
+			unauthorised(w)
+			return
+
+		}
+		log.Println("THIS IS USERS:", users)
+
+		if len(users) == 0 {
+			log.Println("There are no users in users list")
+
+			unauthorised(w)
+			return
+		}
+
+		if p != users[0].Password {
+			log.Println("Password didnt match")
+			unauthorised(w)
+			return
+		}
+
+		// log.Println("some usr:", u, "pass:", p, "and is ok?:", ok)
+		f(w, r)
+	}
 }

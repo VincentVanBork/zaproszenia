@@ -6,6 +6,7 @@ handlers:
     script: auto
 basic_scaling:
   max_instances: 1
+  idle_timeout: 60s
 network: {}
 service_account: gosia-michal-zaproszenia@appspot.gserviceaccount.com
 env_variables:
