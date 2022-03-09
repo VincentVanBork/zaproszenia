@@ -10,6 +10,5 @@ network: {}
 service_account: gosia-michal-zaproszenia@appspot.gserviceaccount.com
 env_variables:
   GCLOUD_DATASET_ID: gosia-michal-zaproszenia
-  AUTH_PASSWORD: $$2a$$10$$8rY/XmmdY6TO2.qv7ouFruE9xT9yelA9x1DR4UQR57gL/imZ.VHp.
-  AUTH_USERNAME: $$2a$$10$$6.s45q6ckaKEJRHzzsowJuEHvBRncFW/VL8Lf5e5jRLBcbvp5l2YW
+
 app_engine_apis: true

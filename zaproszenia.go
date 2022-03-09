@@ -2,17 +2,15 @@
 package main
 
 import (
+	"cloud.google.com/go/datastore"
 	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/appengine"
 	"log"
 	"net/http"
 	"os"
 	"zaproszenia/models"
-	"zaproszenia/utils"
-
-	"cloud.google.com/go/datastore"
-	"google.golang.org/appengine"
 )
 
 var datastoreClient *datastore.Client
@@ -29,8 +27,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", basicAuth(getAllInvit))
-	http.HandleFunc("/create", basicAuth(createInvit))
+	http.HandleFunc("/", getAllInvit)
+	http.HandleFunc("/create", createInvit)
 	appengine.Main()
 }
 
@@ -90,35 +88,4 @@ func createInvit(w http.ResponseWriter, r *http.Request) {
 	}
 	data, _ := json.Marshal(invit)
 	_, err = w.Write(data)
-}
-
-func basicAuth(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Extract the username and password from the request
-		// Authorization header. If no Authentication header is present
-		// or the header value is invalid, then the 'ok' return value
-		// will be false.
-		username, password, ok := r.BasicAuth()
-		if ok {
-			// Calculate SHA-256 hashes for the provided and expected
-			// usernames and passwords.
-			passwordMatch := utils.CheckPasswordHash(password, os.Getenv("AUTH_PASSWORD"))
-			usernameMatch := utils.CheckPasswordHash(username, os.Getenv("AUTH_USERNAME"))
-
-			// If the username and password are correct, then call
-			// the next handler in the chain. Make sure to return
-			// afterwards, so that none of the code below is run.
-			if usernameMatch && passwordMatch {
-				next.ServeHTTP(w, r)
-				return
-			}
-		}
-
-		// If the Authentication header is not present, is invalid, or the
-		// username or password is wrong, then set a WWW-Authenticate
-		// header to inform the client that we expect them to use basic
-		// authentication and send a 401 Unauthorized response.
-		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-	})
 }
