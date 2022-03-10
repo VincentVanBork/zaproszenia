@@ -2,8 +2,14 @@ runtime: go116
 env: standard
 instance_class: B2
 handlers:
-  - url: /static
-    static_dir: static
+  - url: /img
+    static_dir: static/img
+  - url: /js
+    static_dir: static/js
+  - url: /css
+    static_dir: static/css
+  - url: /mp3
+    static_dir: static/mp3
   - url: /.*
     redirect_http_response_code: 301
     script: auto
