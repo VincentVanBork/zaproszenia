@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <title>Zaproszenie</title>
+</head>
+<body>
+<div class="main-box">
+    <div class="title-box">
+        <span class="invitation-title" id="f1t"> </span>
+        <br/>
+        <span class="guests-for" id="f1.5t"> </span>
+        <br/>
+        <span class="guests-info" id="f2t"> </span>
+    </div>
+    <div id="img-div-id" class="img-box">
+        <img src="img/img2.jpg" alt="Zaproszenie" class="img-img">
+        <img src="img/play.jpg" alt="Rozpocznij" class="play-img" id="play-img">
+    </div>
+    <div class="title-bottom-box">
+        <span id="f1tb"></span>
+        <br/>
+        <span id="f2tb"></span>
+        <br/>
+        <span id="f3tb"></span>
+        <br/>
+        <span id="f4tb"></span>
+    </div>
+    <div class="bottom-box">
+        <div class="snaw">
+            <span class="min-title">Ślub</span><br/>
+            <span>Kościół pw. św. Antoniego z Padwy</span><br/>
+            <span>Antoniego Padewskiego 4, Łódź</span>
+        </div>
+        <div class="snaw" id="reception">
+            <span class="min-title">Wesele</span><br/>
+            <span>Nostalgia Sokolniki</span><br/>
+            <span>Sokolniki 34, Las Sokolniki</span>
+        </div>
+    </div>
+    <div id="reception-info" class="reg-box">
+        <span>Prosimy o potwierdzenie przybycia do 11.06.2022</span>
+        <br/>
+        <span>Michał 697 648 102</span>
+        <br/>
+        <span>Małgorzata 517 961 292</span>
+        <br/><br/>
+        <span>Zachęcamy wszystkich do podania adresu e-mail poniżej.</span>
+        <br/>
+        <span>Dzięki temu będziecie informowani o ewentualnych zmianach (na stronie pojawi się także</span>
+        <br/>
+        <span>plan sali z przydziałem miejsc przy stołach), a my dowiemy się</span>
+        <br/>
+        <span>kto jest zainteresowany dojazdem i noclegiem</span>
+        <br/>
+        <form class="update-additional-info" action="">
+            <div style="display: flex; align-items: center; margin-top: 25px;">
+                <input type="checkbox" id="transport" name="Transport">
+                <label for="transport"> Transport Łódź-Sokolniki-Łódź</label>
+            </div>
+            <br/>
+            <div style="display: flex; align-items: center;">
+                <input type="checkbox" id="nocleg" name="Hotel">
+                <label for="transport"> Nocleg z 25 na 26 czerwca</label>
+            </div>
+            <br/>
+            <input type="text" name="Email">
+            <br/>
+            <button type="submit" formmethod="post">Potwierdź</button>
+        </form>
+    </div>
+</div>
+
+<div id="song"></div>
+<!--    <audio id="audio-player" autoplay>-->
+<!--        <source src="mp3/3.mp3" type="audio/mpeg">-->
+<!--    </audio>-->
+
+<script src="js/script.js"></script>
+</body>
+</html>

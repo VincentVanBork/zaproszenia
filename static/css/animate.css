@@ -1,0 +1,26 @@
+@keyframes animate-img {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+}
+
+@keyframes animate-play-img {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:0.5;
+    }
+}
+
+@keyframes animate-play-img-rev {
+    0% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+    }
+}
