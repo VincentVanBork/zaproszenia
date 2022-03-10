@@ -65,6 +65,8 @@ func main() {
 	})
 
 	ControllerInvit := controllers.InvitationsController{Objects: datastoreClient}
+	app.Get("/api/invitations/:key", ControllerInvit.GetFullInvitation)
+	app.Get("/admin/invitations/:key", ControllerInvit.GetOne)
 	app.Get("/admin/invitations", ControllerInvit.GetAll)
 	app.Post("/admin/invitations", ControllerInvit.Create)
 

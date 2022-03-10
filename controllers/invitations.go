@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"cloud.google.com/go/datastore"
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"log"
@@ -33,5 +34,39 @@ func (u *InvitationsController) Create(c *fiber.Ctx) error {
 		return err
 	}
 	invit, err := models.GetInvitation(ctx, u.Objects, key)
+	return c.JSON(invit)
+}
+
+func (u *InvitationsController) GetFullInvitation(c *fiber.Ctx) error {
+	ctx := context.Background()
+
+	InvitationKey, keyerr := datastore.DecodeKey(c.Params("key"))
+	if keyerr != nil {
+		return keyerr
+	}
+
+	invit, err := models.GetInvitation(ctx, u.Objects, InvitationKey)
+	if err != nil {
+		return err
+	}
+
+	guests, err := models.GetGuestsByInvitationKey(ctx, u.Objects, InvitationKey)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(models.FullInvitationData{Invitation: invit, Guests: guests})
+}
+func (u *InvitationsController) GetOne(c *fiber.Ctx) error {
+	ctx := context.Background()
+
+	InvitationKey, keyerr := datastore.DecodeKey(c.Params("key"))
+	if keyerr != nil {
+		return keyerr
+	}
+	invit, err := models.GetInvitation(ctx, u.Objects, InvitationKey)
+	if err != nil {
+		return err
+	}
 	return c.JSON(invit)
 }

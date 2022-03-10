@@ -73,3 +73,8 @@ func GetInvitation(ctx context.Context, client *datastore.Client, key *datastore
 	err := client.Get(ctx, key, invit)
 	return invit, err
 }
+
+type FullInvitationData struct {
+	Invitation *Invitation
+	Guests     []*Guest
+}

@@ -54,3 +54,10 @@ func GetAllGuests(ctx context.Context, client *datastore.Client) ([]*Guest, erro
 	_, err := client.GetAll(ctx, q, &guests)
 	return guests, err
 }
+func GetGuestsByInvitationKey(ctx context.Context, client *datastore.Client, key *datastore.Key) ([]*Guest, error) {
+	q := datastore.NewQuery("Guest").Filter("Invitation =", key)
+
+	guests := make([]*Guest, 0)
+	_, getAllErr := client.GetAll(ctx, q, &guests)
+	return guests, getAllErr
+}
