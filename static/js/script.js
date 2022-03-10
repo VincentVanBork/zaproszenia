@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
     });
     let invitation = await fetch_invitation(invitation_token)
     // console.log(invitation.Guests)
-    if(invitation.IsWeddingReception === false){
+    if(invitation.IsReception === false){
         document.getElementById('reception').style.display = "none";
         document.getElementsByClassName("update-additional-info")[0].style.display = "none"
         document.getElementById("reception-info").style.display = "none"
@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', async function (event) {
     }
     for (let i = 0; i < invitation.Guests.length; i++) {
         txt[1] += " "
-        txt[1] += invitation.Guests[i].FirstName
+        txt[1] += invitation.Guests[i].Name
         txt[1] += " "
-        txt[1] += invitation.Guests[i].LastName
+        txt[1] += invitation.Guests[i].Surname
         if (i === 0 && invitation.Guests.length > 1) {
             txt[1] += " "
             txt[1] += "i"
         }
-        if (invitation.IsSingle) {
+        if (invitation.HasCompanion) {
             txt[1] += " "
             txt[1] += "wraz z osobą towarzyszącą"
         }
