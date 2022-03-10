@@ -14,8 +14,6 @@ type Invitation struct {
 	IsReception  bool
 	HasCompanion bool
 
-	Guests []int
-
 	Email string
 
 	Hotel     bool
@@ -49,8 +47,6 @@ func CreateInvitation(
 		IsWedding:    isWedding,
 		IsReception:  isReception,
 		HasCompanion: hasCompanion,
-
-		Guests: []int{},
 
 		Email:     "",
 		Hotel:     false,

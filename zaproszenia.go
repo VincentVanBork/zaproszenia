@@ -2,15 +2,21 @@
 package main
 
 import (
+	"cloud.google.com/go/datastore"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"log"
 	"net/http"
 	"os"
+	"zaproszenia/controllers"
 	"zaproszenia/models"
-
-	"cloud.google.com/go/datastore"
+	"zaproszenia/utils"
 )
 
 var datastoreClient *datastore.Client
@@ -32,17 +38,41 @@ func main() {
 		}
 	}(datastoreClient)
 
-	http.HandleFunc("/invitations", BasicAuth(getAllInvit))
-	http.HandleFunc("/create", BasicAuth(createInvit))
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 		log.Printf("Defaulting to port %s", port)
 	}
-	log.Printf("Listening on port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatal(err)
-	}
+
+	//http.HandleFunc("/invitations", BasicAuth(getAllInvit))
+	//http.HandleFunc("/create", BasicAuth(createInvit))
+	//log.Printf("Listening on port %s", port)
+	//if err := http.ListenAndServe(":"+port, nil); err != nil {
+	//	log.Fatal(err)
+	//}
+
+	app := fiber.New()
+
+	app.Use("/admin", basicauth.New(basicauth.Config{
+		Users: utils.GetUsers(datastoreClient),
+	}))
+	app.Use(logger.New())
+	app.Use(cors.New())
+	app.Use(recover.New())
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, Invitations 👋!")
+	})
+
+	ControllerInvit := controllers.InvitationsController{Objects: datastoreClient}
+	app.Get("/admin/invitations", ControllerInvit.GetAll)
+	app.Post("/admin/invitations", ControllerInvit.Create)
+
+	ControllerGuest := controllers.GuestController{Objects: datastoreClient}
+	app.Get("/admin/guests", ControllerGuest.GetAll)
+	app.Post("/admin/guests", ControllerGuest.Create)
+
+	log.Fatal(app.Listen(":" + port))
 }
 
 func getAllInvit(w http.ResponseWriter, r *http.Request) {

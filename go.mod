@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	cloud.google.com/go/datastore v1.6.0
+	github.com/gofiber/fiber/v2 v2.29.0
 	github.com/lithammer/shortuuid/v4 v4.0.0
-	google.golang.org/appengine v1.6.7
+	golang.org/x/sys v0.0.0-20220310020820-b874c991c1a5 // indirect
 )
