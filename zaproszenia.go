@@ -11,14 +11,12 @@ import (
 	"zaproszenia/models"
 
 	"cloud.google.com/go/datastore"
-	"google.golang.org/appengine"
 )
 
 var datastoreClient *datastore.Client
 
 func main() {
 	ctx := context.Background()
-
 	// Set this in app.yaml when running in production.
 	projectID := os.Getenv("GCLOUD_DATASET_ID")
 
@@ -27,14 +25,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer datastoreClient.Close()
-	http.HandleFunc("/", getAllInvit)
+	defer func(datastoreClient *datastore.Client) {
+		err := datastoreClient.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(datastoreClient)
+
+	http.HandleFunc("/invitations", BasicAuth(getAllInvit))
 	http.HandleFunc("/create", BasicAuth(createInvit))
-	appengine.Main()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getAllInvit(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
+	if r.URL.Path != "/invitations" {
 		http.NotFound(w, r)
 		return
 	}

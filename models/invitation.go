@@ -7,6 +7,7 @@ import (
 )
 
 type Invitation struct {
+	K     *datastore.Key `datastore:"__key__"`
 	Token string
 
 	IsWedding    bool
@@ -22,6 +23,7 @@ type Invitation struct {
 }
 
 type Requirements struct {
+	K            *datastore.Key `datastore:"__key__"`
 	Hotel        bool
 	Transport    bool
 	InvitationId int
