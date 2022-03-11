@@ -4,7 +4,6 @@ package main
 import (
 	"cloud.google.com/go/datastore"
 	"context"
-	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -43,11 +42,13 @@ func main() {
 		log.Printf("Defaulting to port %s", port)
 	}
 
+	ControllerInvit := controllers.InvitationsController{Objects: datastoreClient}
+	ControllerGuest := controllers.GuestController{Objects: datastoreClient}
+
 	engine := html.New("./static", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
-
 	app.Use("/admin", basicauth.New(basicauth.Config{
 		Users: utils.GetUsers(datastoreClient),
 	}))
@@ -66,19 +67,18 @@ func main() {
 		if Inviterr != nil {
 			return Inviterr
 		}
-		if invitation.Token == Token {
-			return c.Render("index", fiber.Map{})
+		if invitation.Token != Token {
+			return c.SendStatus(fiber.StatusUnauthorized)
 		}
-		return errors.New("Could not match token to your invitation")
+		//return c.Render("index", fiber.Map{})
+		return c.SendFile("./static/index.html")
 	})
 
-	ControllerInvit := controllers.InvitationsController{Objects: datastoreClient}
 	app.Get("/api/invitations/:key", ControllerInvit.GetFullInvitation)
 	app.Get("/admin/invitations/:key", ControllerInvit.GetOne)
 	app.Get("/admin/invitations", ControllerInvit.GetAll)
 	app.Post("/admin/invitations", ControllerInvit.Create)
 
-	ControllerGuest := controllers.GuestController{Objects: datastoreClient}
 	app.Get("/admin/guests", ControllerGuest.GetAll)
 	app.Post("/admin/guests", ControllerGuest.Create)
 

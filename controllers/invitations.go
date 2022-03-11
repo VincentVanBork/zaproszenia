@@ -55,6 +55,10 @@ func (u *InvitationsController) GetFullInvitation(c *fiber.Ctx) error {
 		return err
 	}
 
+	Token := c.Query("token", "")
+	if invit.Token != Token {
+		return c.SendStatus(fiber.StatusForbidden)
+	}
 	return c.JSON(models.FullInvitationData{Invitation: invit, Guests: guests})
 }
 func (u *InvitationsController) GetOne(c *fiber.Ctx) error {

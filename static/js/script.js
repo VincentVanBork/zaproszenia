@@ -1,5 +1,7 @@
 async function fetch_invitation(token) {
-    let response = await fetch("/api/invitations/" + window.location.pathname.split("/").at(-1))
+    getInvitString = "/api/invitations/" + window.location.pathname.split("/").at(-1) +"?token="+invitation_token
+    console.log(getInvitString)
+    let response = await fetch(getInvitString)
     return await response.json()
 }
 
